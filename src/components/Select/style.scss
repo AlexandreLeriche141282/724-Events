@@ -55,8 +55,10 @@
     height: 32px;
     margin-top: 16px;
     margin-right: 8px;
+    transition-duration: 0.4s;
     &.close {
       transform: rotate(180deg);
+      transition-duration: 0.4s;
     }
   }
   .SelectTitle {
