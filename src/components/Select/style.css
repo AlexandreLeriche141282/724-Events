@@ -64,10 +64,14 @@
   height: 32px;
   margin-top: 16px;
   margin-right: 8px;
+  -webkit-transition-duration: 0.4s;
+          transition-duration: 0.4s;
 }
 .Select button.close {
   -webkit-transform: rotate(180deg);
           transform: rotate(180deg);
+  -webkit-transition-duration: 0.4s;
+          transition-duration: 0.4s;
 }
 .Select .SelectTitle--show {
   display: -webkit-box;
