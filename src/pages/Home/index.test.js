@@ -21,7 +21,7 @@ describe("When Form is created", () => {
         })
       );
       await screen.findByText("En cours");
-      await screen.findByText("Votre message a été envoyé avec succès");
+      await screen.findByText("Message envoyé !");
     });
   });
 

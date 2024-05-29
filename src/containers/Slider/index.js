@@ -5,46 +5,32 @@ import { getMonth } from "../../helpers/Date";
 import "./style.scss";
 
 const Slider = () => {
-  // Récupère les données depuis le contexte DataContext
   const { data } = useData();
-  // Utilise le hook useState pour gérer l'index de la carte affichée
   const [index, setIndex] = useState(0);
-
-  // Trie les événements par date, du plus ancien au plus récent
-  const byDateDesc = data?.focus.sort(
-    (evtA, evtB) =>
-      new Date(evtA.date) - new Date(evtB.date)
+  const byDateDesc = data?.focus.sort((evtA, evtB) =>
+    // Tri des événements dans l'ordre décroissant en fonction de la date
+    new Date(evtA.date) > new Date(evtB.date) ? -1 : 1
   );
-
-  // Fonction pour passer à la carte suivante
   const nextCard = () => {
-    setIndex(index < (byDateDesc && byDateDesc.length - 1) ? index + 1 : 0);
-  };
-  // Incrémente l'index passer à la carte suivante, ou revient 1er carte si on atteint fin  liste
-
-  // Utilise le hook useEffect pour mettre en place une minuterie
+    setTimeout(
+      // Incrémentation de l'index avec une vérification pour éviter l'erreur "undefined"
+      () => setIndex(index + 1 < byDateDesc?.length ? index + 1 : 0),
+      5000
+    );};
   useEffect(() => {
-    const timeoutSlider = setTimeout(() => {
-      nextCard();
-    }, 5000);
-    // Appelle nextCard toutes les 5 secondes
-
-    return () => clearTimeout(timeoutSlider);
-    // Nettoie la minuterie lorsque le composant est démonté ou que nextCard change
-  }, [nextCard]);
-
+    nextCard();
+  });
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
-        <div key={Math.random()}>
-          {/* Affiche la carte correspondant à l'index courant */}
+        // Utilisation de la date comme clé unique pour chaque slide
+        <div key={event.date}>
           <div
-            key={event.title}
             className={`SlideCard SlideCard--${
               index === idx ? "display" : "hide"
-            }`}
-          >
-            <img src={event.cover} alt="forum" />
+            }`} >
+         {/* Utilisation du titre de l'événement comme texte alternatif pour l'image */}
+            <img src={event.cover} alt={event.title} />
             <div className="SlideCard__descriptionContainer">
               <div className="SlideCard__description">
                 <h3>{event.title}</h3>
@@ -53,16 +39,18 @@ const Slider = () => {
               </div>
             </div>
           </div>
-          {/* Affiche les boutons radio pour naviguer entre les cartes */}
           <div className="SlideCard__paginationContainer">
             <div className="SlideCard__pagination">
               {byDateDesc.map((_, radioIdx) => (
                 <input
-                  key={event.id}
+                  // Utilisation de la date comme clé unique pour chaque bouton radio
+                  key={_.date}
                   type="radio"
                   name="radio-button"
+                  // Utilisation de l'index pour indiquer la slide en cours
                   checked={index === radioIdx}
-                  onChange={() => setIndex(radioIdx)}
+                  // Ajout de l'attribut readOnly pour éviter les erreurs de console
+                  readOnly
                 />
               ))}
             </div>

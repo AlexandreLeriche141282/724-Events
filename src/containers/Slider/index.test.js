@@ -36,7 +36,12 @@ describe("When slider is created", () => {
       </DataProvider>
     );
     await screen.findByText("World economic forum");
-    await screen.findByText("janvier");
+    const januaryEvent = await screen.findByText(
+      (content, element) =>
+        content.includes("World Farming Day") &&
+        element.tagName.toLowerCase() === "div"
+    );
+    expect(januaryEvent).toBeInTheDocument();
     await screen.findByText(
       "Oeuvre à la coopération entre le secteur public et le privé."
     );
