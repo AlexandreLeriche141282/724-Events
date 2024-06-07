@@ -7,19 +7,45 @@ import "./style.scss";
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(true); // État pour contrôler le défilement
+
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
     // Tri des événements du plus ancien au plus récent
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
+
   const nextCard = () => {
     setTimeout(
       // Incrémentation de l'index avec une vérification pour éviter l'erreur "undefined"
       () => setIndex(index + 1 < byDateDesc?.length ? index + 1 : 0),
       5000
-    );};
+    );
+  };
+
   useEffect(() => {
-    nextCard();
-  });
+    if (isScrolling) {
+      nextCard();
+    }
+  }, [index, isScrolling]);
+
+  useEffect(() => {
+    // Fonction de gestion de l'événement
+    const handleKeyDown = (event) => {
+      if (event.code === 'Space') {
+        event.preventDefault(); // Empêche le défilement de la page
+        setIsScrolling((prev) => !prev); // Inverse l'état de défilement
+      }
+    };
+
+    // Ajouter l'écouteur d'événement
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Nettoyer l'écouteur d'événement au démontage du composant
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
@@ -28,8 +54,9 @@ const Slider = () => {
           <div
             className={`SlideCard SlideCard--${
               index === idx ? "display" : "hide"
-            }`} >
-         {/* Utilisation du titre de l'événement comme texte alternatif pour l'image */}
+            }`}
+          >
+            {/* Utilisation du titre de l'événement comme texte alternatif pour l'image */}
             <img src={event.cover} alt={event.title} />
             <div className="SlideCard__descriptionContainer">
               <div className="SlideCard__description">
